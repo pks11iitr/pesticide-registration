@@ -229,6 +229,75 @@ class ProductRegistration:
                 newform=self.driver.find_elements_by_id('ctl00_default_hypSubmit')
                 if newform:
                     newform[0].click()
+                    time.sleep(2)
+                    next=self.driver.find_elements_by_id('ctl00_default_btnNext')
+                    if next:
+                        next[0].click()
+                        time.sleep(2)
+
+    def start_filling_data(self):
+        with open('products-sheet.csv', encoding="utf8") as csv_file:
+            csv_reader = csv.reader(csv_file, delimiter=',')
+            line_count = 0
+            for row in csv_reader:
+                if line_count > 0:
+                    self.open_registration_form()
+                    self.fill_product_data(row)
+
+
+    def fill_product_data(self, data):
+        self.fill_product_data_form_1(data)
+
+
+    def fill_product_data_form1(self, data):
+        elements = self.driver.find_elements_by_id('ctl00_default_ddlProductGroup')
+        if elements:
+            select = Select(elements[0])
+            select.select_by_visible_text(data[1])
+        time.sleep(1)
+
+        elements = self.driver.find_elements_by_id('ctl00_default_ddlInsecticideAct')
+        if elements:
+            select = Select(elements[0])
+            select.select_by_value('61')
+        time.sleep(1)
+
+        elements = self.driver.find_elements_by_id('ctl00_default_ddlCategory')
+        if elements:
+            select = Select(elements[0])
+            select.select_by_value('56')
+        time.sleep(1)
+
+        elements = self.driver.find_elements_by_id('ctl00_default_ddlCommonName')
+        if elements:
+            select = Select(elements[0])
+            select.select_by_visible_text(data[0])
+        time.sleep(1)
+
+        elements = self.driver.find_elements_by_id('ctl00_default_ddl_repacked')
+        if elements:
+            select = Select(elements[0])
+            select.select_by_value('Manuf_01')
+        time.sleep(1)
+
+        elements = self.driver.find_elements_by_id('ctl00_default_ddlConsumption')
+        if elements:
+            select = Select(elements[0])
+            select.select_by_value('51')
+        time.sleep(1)
+
+
+        elements = self.driver.find_elements_by_id('ctl00_default_txtFormulationSource')
+        if elements:
+            elements[0].send_keys(data[2])
+        time.sleep(1)
+
+        elements = self.driver.find_elements_by_id('ctl00_default_ddlFormulationStatus')
+        if elements:
+            select = Select(elements[0])
+            select.select_by_value('216')
+        time.sleep(1)
+
 
     def start1(self, file):
         pdf = PdfFileReader(open(file, 'rb'))
@@ -241,8 +310,7 @@ class ProductRegistration:
         self.initiate();
         self.getCompanyInfo()
         self.login()
-        self.open_registration_form()
-
+        self.start_filling_data()
 
 
 pdf_parser = ProductRegistration()
