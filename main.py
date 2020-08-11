@@ -88,14 +88,9 @@ class ProductRegistration:
             line_count = 0
             for row in csv_reader:
                 if line_count > 0:
-                    self.company_name_e = row[0]
-                    self.company_name_h = row[1]
-                    self.company_address_e = row[2]
-                    self.company_address_h = row[3]
-                    self.email = row[4]
-                    self.telephone = row[5]
-                    self.siteusername = row[6]
-                    self.sitepassword = row[7]
+                    self.siteusername = row[0]
+                    self.sitepassword = row[1]
+                    self.bod=row[3]
                     return
                 line_count += 1
 
@@ -243,13 +238,15 @@ class ProductRegistration:
                 if line_count > 0:
                     self.open_registration_form()
                     self.fill_product_data(row)
+                line_count=line_count+1
 
 
     def fill_product_data(self, data):
         self.fill_product_data_form_1(data)
+        self.fill_product_data_form_2()
 
 
-    def fill_product_data_form1(self, data):
+    def fill_product_data_form_1(self, data):
         elements = self.driver.find_elements_by_id('ctl00_default_ddlProductGroup')
         if elements:
             select = Select(elements[0])
@@ -298,6 +295,64 @@ class ProductRegistration:
             select.select_by_value('216')
         time.sleep(1)
 
+        button=self.driver.find_elements_by_id('ctl00_default_btnSave')
+        if button:
+            button[0].click()
+
+    def fill_product_data_form_2(self):
+        file=self.driver.find_elements_by_id('ctl00_default_gvForm1Checklist_ctl02_rowFileUpload')
+        if file:
+            file[0].send_keys(self.bod)
+            btn=self.driver.find_elements_by_id('ctl00_default_gvForm1Checklist_ctl02_rowbtnUpLoad')
+            btn[0].click()
+
+        file=self.driver.find_elements_by_id('ctl00_default_gvForm1Checklist_ctl03_rowFileUpload')
+        if file:
+            file[0].send_keys(self.bod)
+            btn=self.driver.find_elements_by_id('ctl00_default_gvForm1Checklist_ctl03_rowbtnUpLoad')
+            btn[0].click()
+
+        file=self.driver.find_elements_by_id('ctl00_default_gvForm1Checklist_ctl04_rowFileUpload')
+        if file:
+            file[0].send_keys(self.bod)
+            btn=self.driver.find_elements_by_id('ctl00_default_gvForm1Checklist_ctl04_rowbtnUpLoad')
+            btn[0].click()
+
+        file=self.driver.find_elements_by_id('ctl00_default_gvForm1Checklist_ctl05_rowFileUpload')
+        if file:
+            file[0].send_keys(self.bod)
+            btn=self.driver.find_elements_by_id('ctl00_default_gvForm1Checklist_ctl05_rowbtnUpLoad')
+            btn[0].click()
+
+        file=self.driver.find_elements_by_id('ctl00_default_gvForm1Checklist_ctl06_rowFileUpload')
+        if file:
+            file[0].send_keys(self.bod)
+            btn=self.driver.find_elements_by_id('ctl00_default_gvForm1Checklist_ctl06_rowbtnUpLoad')
+            btn[0].click()
+
+        file=self.driver.find_elements_by_id('ctl00_default_gvForm1Checklist_ctl07_rowFileUpload')
+        if file:
+            file[0].send_keys(self.bod)
+            btn=self.driver.find_elements_by_id('ctl00_default_gvForm1Checklist_ctl07_rowbtnUpLoad')
+            btn[0].click()
+
+        file=self.driver.find_elements_by_id('ctl00_default_gvForm1Checklist_ctl08_rowFileUpload')
+        if file:
+            file[0].send_keys(self.bod)
+            btn=self.driver.find_elements_by_id('ctl00_default_gvForm1Checklist_ctl08_rowbtnUpLoad')
+            btn[0].click()
+
+        file=self.driver.find_elements_by_id('ctl00_default_gvForm1Checklist_ctl09_rowFileUpload')
+        if file:
+            file[0].send_keys(self.bod)
+            btn=self.driver.find_elements_by_id('ctl00_default_gvForm1Checklist_ctl09_rowbtnUpLoad')
+            btn[0].click()
+
+        file=self.driver.find_elements_by_id('ctl00_default_gvForm1Checklist_ctl10_rowFileUpload')
+        if file:
+            file[0].send_keys(self.bod)
+            btn=self.driver.find_elements_by_id('ctl00_default_gvForm1Checklist_ctl10_rowbtnUpLoad')
+            btn[0].click()
 
     def start1(self, file):
         pdf = PdfFileReader(open(file, 'rb'))
