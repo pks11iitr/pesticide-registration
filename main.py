@@ -270,6 +270,8 @@ class ProductRegistration:
     def fill_product_data(self, data):
         self.fill_product_data_form_1(data)
         self.fill_product_data_form_2(data)
+        self.processing_step_3()
+        self.modifying_main_document()
 
 
     def fill_product_data_form_1(self, data):
@@ -429,6 +431,59 @@ class ProductRegistration:
         btn=self.driver.find_elements_by_id('ctl00_default_btn_FinalSave')
         if btn:
             btn[0].click()
+
+    def processing_step_3(self):
+        link=self.driver.find_elements_by_id('ctl00_default_hypPreview')
+        if link:
+            link[0].click()
+
+        time.sleep(1)
+
+        window_after = self.driver.window_handles[1]
+        self.window_parent = self.driver.window_handles[0]
+        self.driver.switch_to_window(window_after)
+
+        pdf=self.driver.find_elements_by_id('rvRpt_ctl01_ctl05_ctl00')
+        if pdf:
+            selector=Select(pdf[0])
+            selector.select_by_value('PDF')
+            time.sleep(1)
+            export=self.driver.find_elements_by_id('rvRpt_ctl01_ctl05_ctl01')
+            export[0].click()
+            time.sleep(3)
+
+        self.driver.switch_to_window(self.window_parent)
+
+        page2=self.driver.find_elements_by_id('ctl00_default_hypBacktoPage2')
+        if page2:
+            page2[0].click()
+
+
+    def modifying_main_document(self):
+
+        delbtn=self.driver.find_elements_by_id('ctl00_default_gvForm1Checklist_ctl02_rowbtnDelete')
+        if delbtn:
+            delbtn[0].click()
+        time.sleep(1)
+
+        ale = self.driver.switch_to_alert();
+        ale.accept()
+        time.sleep(1)
+
+        self.driver.switch_to_window(self.window_parent)
+
+        file = self.driver.find_elements_by_id('ctl00_default_gvForm1Checklist_ctl02_rowFileUpload')
+        if file:
+            file[0].send_keys('/home/pankaj/Downloads/ReportForm1.pdf')
+            btn = self.driver.find_elements_by_id('ctl00_default_gvForm1Checklist_ctl02_rowbtnUpLoad')
+            btn[0].click()
+            os.remove('/home/pankaj/Downloads/ReportForm1.pdf')
+            time.sleep(1)
+
+        btn = self.driver.find_elements_by_id('ctl00_default_btn_FinalSave')
+        if btn:
+            btn[0].click()
+
 
     def start1(self, file):
         pdf = PdfFileReader(open(file, 'rb'))
