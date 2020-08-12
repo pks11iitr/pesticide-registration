@@ -91,12 +91,12 @@ class ProductRegistration:
                     self.siteusername = row[0]
                     self.sitepassword = row[1]
                     self.authorization=row[4]
-                    self.manufacturing=row[3]
-                    self.production=row[5]
-                    self.pancard=row[6]
-                    self.ssi=row[7]
-                    self.self_affidavit_path=row[8]
-                    self.consent_path=row[9]
+                    self.manufacturing=row[5]
+                    self.production=row[6]
+                    self.pancard=row[7]
+                    self.ssi=row[8]
+                    self.self_affidavit_path=row[9]
+                    self.consent_path=row[10]
                     return
                 line_count += 1
 
@@ -276,7 +276,7 @@ class ProductRegistration:
         elements = self.driver.find_elements_by_id('ctl00_default_ddlProductGroup')
         if elements:
             select = Select(elements[0])
-            select.select_by_visible_text(data[1])
+            select.select_by_visible_text(data[2])
         time.sleep(1)
 
         elements = self.driver.find_elements_by_id('ctl00_default_ddlInsecticideAct')
@@ -312,7 +312,7 @@ class ProductRegistration:
 
         elements = self.driver.find_elements_by_id('ctl00_default_txtFormulationSource')
         if elements:
-            elements[0].send_keys(data[2])
+            elements[0].send_keys(data[1])
         time.sleep(1)
 
         elements = self.driver.find_elements_by_id('ctl00_default_ddlFormulationStatus')
@@ -378,7 +378,7 @@ class ProductRegistration:
         file=self.driver.find_elements_by_id('ctl00_default_gvForm1Checklist_ctl09_rowFileUpload')
         if file:
             file_name=data[0]
-            file_name=file_name.replace('.', '-')
+            file_name=file_name.replace('.', '-')+'.pdf'
             file[0].send_keys(self.self_affidavit_path+'/'+file_name)
             btn=self.driver.find_elements_by_id('ctl00_default_gvForm1Checklist_ctl09_rowbtnUpLoad')
             btn[0].click()
@@ -386,7 +386,8 @@ class ProductRegistration:
 
         file=self.driver.find_elements_by_id('ctl00_default_gvForm1Checklist_ctl10_rowFileUpload')
         if file:
-            file_name = file_name.replace('.', '-')
+            file_name = data[0]
+            file_name = file_name.replace('.', '-')+'.pdf'
             file[0].send_keys(self.consent_path + '/' + file_name)
             btn=self.driver.find_elements_by_id('ctl00_default_gvForm1Checklist_ctl10_rowbtnUpLoad')
             btn[0].click()
@@ -439,6 +440,7 @@ class ProductRegistration:
     def start(self):
         self.initiate();
         self.getCompanyInfo()
+        self.get_product_other_details()
         self.login()
         self.start_filling_data()
 
