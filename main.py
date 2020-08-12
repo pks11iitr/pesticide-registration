@@ -90,7 +90,13 @@ class ProductRegistration:
                 if line_count > 0:
                     self.siteusername = row[0]
                     self.sitepassword = row[1]
-                    self.bod=row[3]
+                    self.authorization=row[4]
+                    self.manufacturing=row[3]
+                    self.production=row[5]
+                    self.pancard=row[6]
+                    self.ssi=row[7]
+                    self.self_affidavit_path=row[8]
+                    self.consent_path=row[9]
                     return
                 line_count += 1
 
@@ -230,6 +236,26 @@ class ProductRegistration:
                         next[0].click()
                         time.sleep(2)
 
+    def get_product_other_details(self):
+        self.product_details=[]
+        with open('products-data.csv', encoding="utf8") as csv_file:
+            csv_reader = csv.reader(csv_file, delimiter=',')
+            line_count = 0
+            for row in csv_reader:
+                if line_count > 0:
+                    self.product_details.append({
+                        'name':row[0],
+                        'toxicity':row[1],
+                        'packing':row[2]
+                    })
+                line_count=line_count+1
+
+    def search_product_details(self, name):
+        for product in self.product_details:
+            if product['name'] == name:
+                return product
+
+
     def start_filling_data(self):
         with open('products-sheet.csv', encoding="utf8") as csv_file:
             csv_reader = csv.reader(csv_file, delimiter=',')
@@ -243,7 +269,7 @@ class ProductRegistration:
 
     def fill_product_data(self, data):
         self.fill_product_data_form_1(data)
-        self.fill_product_data_form_2()
+        self.fill_product_data_form_2(data)
 
 
     def fill_product_data_form_1(self, data):
@@ -299,59 +325,108 @@ class ProductRegistration:
         if button:
             button[0].click()
 
-    def fill_product_data_form_2(self):
+    def fill_product_data_form_2(self, data):
         file=self.driver.find_elements_by_id('ctl00_default_gvForm1Checklist_ctl02_rowFileUpload')
         if file:
-            file[0].send_keys(self.bod)
+            file[0].send_keys(self.authorization)
             btn=self.driver.find_elements_by_id('ctl00_default_gvForm1Checklist_ctl02_rowbtnUpLoad')
             btn[0].click()
+            time.sleep(1)
 
         file=self.driver.find_elements_by_id('ctl00_default_gvForm1Checklist_ctl03_rowFileUpload')
         if file:
-            file[0].send_keys(self.bod)
+            file[0].send_keys(self.authorization)
             btn=self.driver.find_elements_by_id('ctl00_default_gvForm1Checklist_ctl03_rowbtnUpLoad')
             btn[0].click()
+            time.sleep(1)
 
         file=self.driver.find_elements_by_id('ctl00_default_gvForm1Checklist_ctl04_rowFileUpload')
         if file:
-            file[0].send_keys(self.bod)
+            file[0].send_keys(self.pancard)
             btn=self.driver.find_elements_by_id('ctl00_default_gvForm1Checklist_ctl04_rowbtnUpLoad')
             btn[0].click()
+            time.sleep(1)
 
         file=self.driver.find_elements_by_id('ctl00_default_gvForm1Checklist_ctl05_rowFileUpload')
         if file:
-            file[0].send_keys(self.bod)
+            file[0].send_keys(self.ssi)
             btn=self.driver.find_elements_by_id('ctl00_default_gvForm1Checklist_ctl05_rowbtnUpLoad')
             btn[0].click()
+            time.sleep(1)
 
         file=self.driver.find_elements_by_id('ctl00_default_gvForm1Checklist_ctl06_rowFileUpload')
         if file:
-            file[0].send_keys(self.bod)
+            file[0].send_keys(self.manufacturing)
             btn=self.driver.find_elements_by_id('ctl00_default_gvForm1Checklist_ctl06_rowbtnUpLoad')
             btn[0].click()
+            time.sleep(1)
 
         file=self.driver.find_elements_by_id('ctl00_default_gvForm1Checklist_ctl07_rowFileUpload')
         if file:
-            file[0].send_keys(self.bod)
+            file[0].send_keys(self.production)
             btn=self.driver.find_elements_by_id('ctl00_default_gvForm1Checklist_ctl07_rowbtnUpLoad')
             btn[0].click()
+            time.sleep(1)
 
         file=self.driver.find_elements_by_id('ctl00_default_gvForm1Checklist_ctl08_rowFileUpload')
         if file:
-            file[0].send_keys(self.bod)
+            file[0].send_keys(self.production)
             btn=self.driver.find_elements_by_id('ctl00_default_gvForm1Checklist_ctl08_rowbtnUpLoad')
             btn[0].click()
+            time.sleep(1)
 
         file=self.driver.find_elements_by_id('ctl00_default_gvForm1Checklist_ctl09_rowFileUpload')
         if file:
-            file[0].send_keys(self.bod)
+            file_name=data[0]
+            file_name=file_name.replace('.', '-')
+            file[0].send_keys(self.self_affidavit_path+'/'+file_name)
             btn=self.driver.find_elements_by_id('ctl00_default_gvForm1Checklist_ctl09_rowbtnUpLoad')
             btn[0].click()
+            time.sleep(1)
 
         file=self.driver.find_elements_by_id('ctl00_default_gvForm1Checklist_ctl10_rowFileUpload')
         if file:
-            file[0].send_keys(self.bod)
+            file_name = file_name.replace('.', '-')
+            file[0].send_keys(self.consent_path + '/' + file_name)
             btn=self.driver.find_elements_by_id('ctl00_default_gvForm1Checklist_ctl10_rowbtnUpLoad')
+            btn[0].click()
+
+        product=self.search_product_details(data[0])
+
+        toxity = self.driver.find_elements_by_id('ctl00_default_txtToxicity')
+        if toxity:
+            toxity[0].send_keys(product['toxicity'])
+
+        bioefficacy = self.driver.find_elements_by_id('ctl00_default_txtBioefficacy')
+        if bioefficacy:
+            bioefficacy[0].send_keys('N.A.')
+
+        firstaid = self.driver.find_elements_by_id('ctl00_default_txtFirstAid')
+        if firstaid:
+            firstaid[0].send_keys('N.A.')
+
+        quality = self.driver.find_elements_by_id('ctl00_default_txtProdQlty')
+        if quality:
+            quality[0].send_keys('Not Required')
+
+        analisis = self.driver.find_elements_by_id('ctl00_default_txtAnalysis')
+        if analisis:
+            analisis[0].send_keys('Not Required As Per The Discussion Of The RC')
+
+        newanalysis = self.driver.find_elements_by_id('ctl00_default_txtAnalysis1New')
+        if newanalysis:
+            newanalysis[0].send_keys('N.A.')
+
+        leaflet = self.driver.find_elements_by_id('ctl00_default_txtLeaflet')
+        if leaflet:
+            leaflet[0].send_keys('N.A.')
+
+        packing = self.driver.find_elements_by_id('ctl00_default_txtPacking')
+        if packing:
+            packing[0].send_keys(product['packing'])
+
+        btn=self.driver.find_elements_by_id('ctl00_default_btn_FinalSave')
+        if btn:
             btn[0].click()
 
     def start1(self, file):
