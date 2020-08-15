@@ -26,7 +26,10 @@ import urllib.request
 import os
 import math
 from selenium.webdriver.common.action_chains import ActionChains
-
+# Python 3.x code
+# Imports
+import tkinter
+from tkinter import messagebox
 
 class element_has_length(object):
     """An expectation for checking that an element has a particular css class.
@@ -103,6 +106,7 @@ class ProductRegistration:
                     self.consent_path = row[10]
                     self.final_doc_path = row[11]
                     self.signature_path = row[12]
+                    self.incorporation_certificate = row[13]
                     return
                 line_count += 1
 
@@ -131,7 +135,7 @@ class ProductRegistration:
 
     def get_product_other_details(self):
         self.product_details = []
-        with open('products-data.csv', encoding="utf8") as csv_file:
+        with open('products-data.csv', encoding="utf8", errors='ignore') as csv_file:
             csv_reader = csv.reader(csv_file, delimiter=',')
             line_count = 0
             for row in csv_reader:
@@ -159,8 +163,11 @@ class ProductRegistration:
                 line_count = line_count + 1
 
     def fill_product_data(self, data):
-        if os.path.exists('/home/pankaj/Downloads/ReportForm1.pdf'):
-            os.remove('/home/pankaj/Downloads/ReportForm1.pdf')
+        #clear last downloaded file
+        self.downloded_file="C:\\Users\dev\Downloads\ReportForm1.pdfReportForm1.pdf"
+        if os.path.exists(self.downloded_file):
+            os.remove(self.downloded_file)
+
         self.fill_product_data_form_1(data)
         self.fill_product_data_form_2(data)
         self.fill_product_data_form_3()
@@ -229,6 +236,9 @@ class ProductRegistration:
     def fill_product_data_form_2(self, data):
         file = self.driver.find_elements_by_id('ctl00_default_gvForm1Checklist_ctl02_rowFileUpload')
         if file:
+            if not os.path.exists(self.authorization):
+                messagebox.showinfo("Error", "Authorization Document Not Found")
+                return False
             file[0].send_keys(self.authorization)
             btn = self.driver.find_elements_by_id('ctl00_default_gvForm1Checklist_ctl02_rowbtnUpLoad')
             btn[0].click()
@@ -236,78 +246,137 @@ class ProductRegistration:
 
         file = self.driver.find_elements_by_id('ctl00_default_gvForm1Checklist_ctl03_rowFileUpload')
         if file:
+            if not os.path.exists(self.authorization):
+                messagebox.showinfo("Error", "Authorization Document Not Found")
+                return False
             file[0].send_keys(self.authorization)
             btn = self.driver.find_elements_by_id('ctl00_default_gvForm1Checklist_ctl03_rowbtnUpLoad')
             btn[0].click()
             time.sleep(2)
 
-        file = self.driver.find_elements_by_id('ctl00_default_gvForm1Checklist_ctl04_rowFileUpload')
+        if self.is_private_ltd=='yes':
+            file = self.driver.find_elements_by_id('ctl00_default_gvForm1Checklist_ctl04_rowFileUpload')
+            if file:
+                if not os.path.exists(self.incorporation_certificate):
+                    messagebox.showinfo("Error", "Incorporation Certificate Document Not Found")
+                file[0].send_keys(self.pancard)
+                btn = self.driver.find_elements_by_id('ctl00_default_gvForm1Checklist_ctl04_rowbtnUpLoad')
+                btn[0].click()
+                time.sleep(2)
+
+        seq='04'
+        if self.is_private_ltd=='yes':
+            seq='05'
+        file = self.driver.find_elements_by_id('ctl00_default_gvForm1Checklist_ctl'+seq+'_rowFileUpload')
         if file:
+            if not os.path.exists(self.pancard):
+                messagebox.showinfo("Error", "Pancard Document Not Found")
             file[0].send_keys(self.pancard)
-            btn = self.driver.find_elements_by_id('ctl00_default_gvForm1Checklist_ctl04_rowbtnUpLoad')
+            btn = self.driver.find_elements_by_id('ctl00_default_gvForm1Checklist_ctl'+seq+'_rowbtnUpLoad')
             btn[0].click()
             time.sleep(2)
 
-        file = self.driver.find_elements_by_id('ctl00_default_gvForm1Checklist_ctl05_rowFileUpload')
+        seq = '05'
+        if self.is_private_ltd == 'yes':
+            seq = '06'
+        file = self.driver.find_elements_by_id('ctl00_default_gvForm1Checklist_ctl'+seq+'_rowFileUpload')
         if file:
+            if not os.path.exists(self.ssi):
+                messagebox.showinfo("Error", "SSI Document Not Found")
             file[0].send_keys(self.ssi)
-            btn = self.driver.find_elements_by_id('ctl00_default_gvForm1Checklist_ctl05_rowbtnUpLoad')
+            btn = self.driver.find_elements_by_id('ctl00_default_gvForm1Checklist_ctl'+seq+'_rowbtnUpLoad')
             btn[0].click()
             time.sleep(2)
 
-        file = self.driver.find_elements_by_id('ctl00_default_gvForm1Checklist_ctl06_rowFileUpload')
+        seq = '06'
+        if self.is_private_ltd == 'yes':
+            seq = '07'
+        file = self.driver.find_elements_by_id('ctl00_default_gvForm1Checklist_ctl'+seq+'_rowFileUpload')
         if file:
+            if not os.path.exists(self.manufacturing):
+                messagebox.showinfo("Error", "Manufacturing Document Not Found")
             file[0].send_keys(self.manufacturing)
-            btn = self.driver.find_elements_by_id('ctl00_default_gvForm1Checklist_ctl06_rowbtnUpLoad')
+            btn = self.driver.find_elements_by_id('ctl00_default_gvForm1Checklist_ctl'+seq+'_rowbtnUpLoad')
             btn[0].click()
             time.sleep(2)
 
-        file = self.driver.find_elements_by_id('ctl00_default_gvForm1Checklist_ctl07_rowFileUpload')
+        seq = '07'
+        if self.is_private_ltd == 'yes':
+            seq = '08'
+        file = self.driver.find_elements_by_id('ctl00_default_gvForm1Checklist_ctl'+seq+'_rowFileUpload')
         if file:
+            if not os.path.exists(self.production):
+                messagebox.showinfo("Error", "Production Document Not Found")
             file[0].send_keys(self.production)
-            btn = self.driver.find_elements_by_id('ctl00_default_gvForm1Checklist_ctl07_rowbtnUpLoad')
+            btn = self.driver.find_elements_by_id('ctl00_default_gvForm1Checklist_ctl'+seq+'_rowbtnUpLoad')
             btn[0].click()
             time.sleep(2)
 
-        file = self.driver.find_elements_by_id('ctl00_default_gvForm1Checklist_ctl08_rowFileUpload')
+        seq = '08'
+        if self.is_private_ltd == 'yes':
+            seq = '09'
+        file = self.driver.find_elements_by_id('ctl00_default_gvForm1Checklist_ctl'+seq+'_rowFileUpload')
         if file:
+            if not os.path.exists(self.production):
+                messagebox.showinfo("Error", "Production Document Not Found")
             file[0].send_keys(self.production)
-            btn = self.driver.find_elements_by_id('ctl00_default_gvForm1Checklist_ctl08_rowbtnUpLoad')
+            btn = self.driver.find_elements_by_id('ctl00_default_gvForm1Checklist_ctl'+seq+'_rowbtnUpLoad')
             btn[0].click()
             time.sleep(2)
 
-        file = self.driver.find_elements_by_id('ctl00_default_gvForm1Checklist_ctl09_rowFileUpload')
+        seq = '09'
+        if self.is_private_ltd == 'yes':
+            seq = '10'
+        file = self.driver.find_elements_by_id('ctl00_default_gvForm1Checklist_ctl'+seq+'_rowFileUpload')
         if file:
             file_name = data[0]
             file_name = file_name.replace('.', '-').replace('/', '-') + '.pdf'
+            if not os.path.exists(self.self_affidavit_path + '/' +file_name):
+                messagebox.showinfo("Error", "Self Affidavit Document Not Found: "+self.self_affidavit_path + '/' +file_name)
             file[0].send_keys(self.self_affidavit_path + '/' + file_name)
-            btn = self.driver.find_elements_by_id('ctl00_default_gvForm1Checklist_ctl09_rowbtnUpLoad')
+            btn = self.driver.find_elements_by_id('ctl00_default_gvForm1Checklist_ctl'+seq+'_rowbtnUpLoad')
             btn[0].click()
             time.sleep(2)
 
-        file = self.driver.find_elements_by_id('ctl00_default_gvForm1Checklist_ctl10_rowFileUpload')
+        seq = '10'
+        if self.is_private_ltd == 'yes':
+            seq = '11'
+        file = self.driver.find_elements_by_id('ctl00_default_gvForm1Checklist_ctl'+seq+'_rowFileUpload')
         if file:
             file_name = data[2]
             file_name = file_name.replace('.', '-').replace('/', '-') + '.pdf'
+            if not os.path.exists(self.consent_path + '/' +file_name):
+                messagebox.showinfo("Error", "Consent Document Not Found: "+self.consent_path + '/' +file_name)
             file[0].send_keys(self.consent_path + '/' + file_name)
-            btn = self.driver.find_elements_by_id('ctl00_default_gvForm1Checklist_ctl10_rowbtnUpLoad')
+            btn = self.driver.find_elements_by_id('ctl00_default_gvForm1Checklist_ctl'+seq+'_rowbtnUpLoad')
             btn[0].click()
             time.sleep(2)
 
+        seq = '11'
+        if self.is_private_ltd == 'yes':
+            seq = '12'
         if data[3]!='':
-            docoptions=self.driver.find_elements_by_id('ctl00_default_gvForm1Checklist_ctl11_ddlDocName')
+            print('second schedule found')
+            docoptions=self.driver.find_elements_by_id('ctl00_default_gvForm1Checklist_ctl'+seq+'_ddlDocName')
             if docoptions:
+                print('options found')
                 file_name=data[3].replace('.', '-').replace('/','-') + '.pdf'
+                if not os.path.exists(self.consent_path + '/' +file_name):
+                    messagebox.showinfo("Error", "Consent Document Not Found: "+self.consent_path + '/' +file_name)
+                print(file_name)
                 docoptions=Select(docoptions[0])
                 docoptions.select_by_value('36')
-                fileupload=self.driver.find_elements_by_id('ctl00_default_gvForm1Checklist_ctl11_footerFileUpload')
+                fileupload=self.driver.find_elements_by_id('ctl00_default_gvForm1Checklist_ctl'+seq+'_footerFileUpload')
                 if fileupload:
                     fileupload[0].send_keys(self.consent_path+'/'+file_name)
-                    extrabtn=self.driver.find_elements_by_id('ctl00_default_gvForm1Checklist_ctl11_footerbtnUpload')
+                    extrabtn=self.driver.find_elements_by_id('ctl00_default_gvForm1Checklist_ctl'+seq+'_footerbtnUpload')
                     if extrabtn:
                         extrabtn[0].click()
 
+
         product = self.search_product_details(data[0])
+        if product == None:
+            messagebox.showinfo("Error", "Product Toxity, Packing Details Not Found: "+data[0])
 
         toxity = self.driver.find_elements_by_id('ctl00_default_txtToxicity')
         if toxity:
@@ -363,7 +432,7 @@ class ProductRegistration:
 
         window_after = self.driver.window_handles[1]
         self.window_parent = self.driver.window_handles[0]
-        self.driver.switch_to_window(window_after)
+        self.driver.switch_to.window(window_after)
 
         pdf = self.driver.find_elements_by_id('rvRpt_ctl01_ctl05_ctl00')
         if pdf:
@@ -374,27 +443,26 @@ class ProductRegistration:
             export[0].click()
             time.sleep(3)
 
-        self.driver.switch_to_window(self.window_parent)
+        self.driver.switch_to.window(self.window_parent)
 
         page2 = self.driver.find_elements_by_id('ctl00_default_hypBacktoPage2')
         if page2:
             page2[0].click()
 
     def modifying_main_document(self, data):
-
-        final_path = self.startPDFProcessing('/home/pankaj/Downloads/ReportForm1.pdf',
+        final_path = self.startPDFProcessing(self.downloded_file,
                                              data[0].replace('.', '-').replace('/', '-'))
 
         delbtn = self.driver.find_elements_by_id('ctl00_default_gvForm1Checklist_ctl02_rowbtnDelete')
         if delbtn:
             delbtn[0].click()
-        time.sleep(1)
+        time.sleep(5)
 
-        ale = self.driver.switch_to_alert();
+        ale = self.driver.switch_to.alert;
         ale.accept()
         time.sleep(1)
 
-        self.driver.switch_to_window(self.window_parent)
+        self.driver.switch_to.window(self.window_parent)
 
         file = self.driver.find_elements_by_id('ctl00_default_gvForm1Checklist_ctl02_rowFileUpload')
         if file:
@@ -501,11 +569,11 @@ class ProductRegistration:
 
         return watermark
 
-    def is_signature_required(self, page):
-        for page1 in self.pdf_pages_list:
-            if page1['page'] == page:
-                return page1
-        return False
+    # def is_signature_required(self, page):
+    #     for page1 in self.pdf_pages_list:
+    #         if page1['page'] == page:
+    #             return page1
+    #     return False
 
     def add_signature_image(self, file, product_name):
 
@@ -537,18 +605,23 @@ class ProductRegistration:
         for page_number in range(page_count):
 
             input_page = input_file.getPage(page_number)
-            details = self.is_signature_required(page_number)
-            if details:
-                print("Watermarking page {} of {}".format(page_number, page_count))
-                # merge the watermark with the page
-                watermark = self.create_watermark(details['x'], details['y'])
-                input_page.mergePage(watermark.getPage(0))
-                self.delete_temporary_files()
-                # add page from input file to output document
+            #details = self.is_signature_required(page_number)
+            for details in self.pdf_pages_list:
+                if details['page']==page_number:
+                    print("Watermarking page {} of {}".format(page_number, page_count))
+                    # merge the watermark with the page
+                    watermark = self.create_watermark(details['x'], details['y'])
+                    input_page.mergePage(watermark.getPage(0))
+                    self.delete_temporary_files()
+                    # add page from input file to output document
             output_file.addPage(input_page)
 
         # finally, write "output" to document-output.pdf
         print(self.final_doc_path + '/' + product_name + '.pdf');
+        if not os.path.exists(self.final_doc_path):
+            messagebox.showinfo("Error",
+                                "Path Doesnt Exists: "+self.final_doc_path)
+
         with open(self.final_doc_path + '/' + product_name + '.pdf', "wb") as outputStream:
             output_file.write(outputStream)
 
@@ -561,11 +634,19 @@ class ProductRegistration:
             os.remove('output.pdf')
 
     def start(self):
+        self.root = tkinter.Tk()
+        self.root.withdraw()
         self.initiate();
         self.getCompanyInfo()
         self.get_product_other_details()
-        self.login()
+        while True:
+            self.login()
+            #print(driver.current_url)
+            #print(loginhomeurl)
+            if self.driver.current_url == 'https://pesticides-registrationindia.nic.in/UserProfile/HomePage.aspx':
+                break
         self.start_filling_data()
+
         #final_path = self.startPDFProcessing('/home/pankaj/Downloads/ReportForm1.pdf')
 
 
