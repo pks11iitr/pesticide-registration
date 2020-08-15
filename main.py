@@ -184,7 +184,7 @@ class ProductRegistration:
         elements = self.driver.find_elements_by_id('ctl00_default_ddlInsecticideAct')
         if elements:
             select = Select(elements[0])
-            select.select_by_value('59')
+            select.select_by_value('61')
         time.sleep(1)
 
         elements = self.driver.find_elements_by_id('ctl00_default_ddlCategory')
@@ -219,7 +219,7 @@ class ProductRegistration:
         elements = self.driver.find_elements_by_id('ctl00_default_ddlFormulationStatus')
         if elements:
             select = Select(elements[0])
-            select.select_by_value('216')
+            select.select_by_value('65')
         time.sleep(1)
 
         button = self.driver.find_elements_by_id('ctl00_default_btnSave')
@@ -293,6 +293,19 @@ class ProductRegistration:
             btn = self.driver.find_elements_by_id('ctl00_default_gvForm1Checklist_ctl10_rowbtnUpLoad')
             btn[0].click()
             time.sleep(2)
+
+        if data[3]!='':
+            docoptions=self.driver.find_elements_by_id('ctl00_default_gvForm1Checklist_ctl11_ddlDocName')
+            if docoptions:
+                file_name=data[3].replace('.', '-').replace('/','-') + '.pdf'
+                docoptions=Select(docoptions[0])
+                docoptions.select_by_value('36')
+                fileupload=self.driver.find_elements_by_id('ctl00_default_gvForm1Checklist_ctl11_footerFileUpload')
+                if fileupload:
+                    fileupload[0].send_keys(self.consent_path+'/'+file_name)
+                    extrabtn=self.driver.find_elements_by_id('ctl00_default_gvForm1Checklist_ctl11_footerbtnUpload')
+                    if extrabtn:
+                        extrabtn[0].click()
 
         product = self.search_product_details(data[0])
 
