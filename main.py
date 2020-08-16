@@ -97,16 +97,16 @@ class ProductRegistration:
                     self.sitepassword = row[1]
                     self.is_private_ltd = row[2]
                     self.district = row[3]
-                    self.authorization = 'Documents/auth.pdf'
-                    self.manufacturing = 'Documents/mfg.pdf'
-                    self.production = 'Documents/production.pdf'
-                    self.pancard = 'Documents/pancard.pdf'
-                    self.ssi = 'Documents/ssi.pdf'
-                    self.self_affidavit_path = 'Documents'
-                    self.consent_path = 'Documents'
-                    self.final_doc_path = 'final-docs'
-                    self.signature_path = 'Documents/digitalsign.jpg'
-                    self.incorporation_certificate = 'Documents/cin.pdf'
+                    self.authorization = os.getcwd()+'/Documents/auth.pdf'
+                    self.manufacturing = os.getcwd()+'/Documents/mfg.pdf'
+                    self.production = os.getcwd()+'/Documents/production.pdf'
+                    self.pancard = os.getcwd()+'/Documents/pancard.pdf'
+                    self.ssi = os.getcwd()+'/Documents/ssi.pdf'
+                    self.self_affidavit_path = os.getcwd()+'/Documents'
+                    self.consent_path = os.getcwd()+'/Documents'
+                    self.final_doc_path = os.getcwd()+'/final-docs'
+                    self.signature_path = os.getcwd()+'/Documents/digitalsign.jpg'
+                    self.incorporation_certificate = os.getcwd()+'/Documents/cin.pdf'
                     return
                 line_count += 1
 
@@ -185,7 +185,7 @@ class ProductRegistration:
             elements = self.driver.find_elements_by_id('ctl00_default_ddlProductGroup2')
             if elements:
                 select = Select(elements[0])
-                select.select_by_visible_text(data[3])
+                select.select_by_value(data[3])
             time.sleep(1)
 
         elements = self.driver.find_elements_by_id('ctl00_default_ddlInsecticideAct')
