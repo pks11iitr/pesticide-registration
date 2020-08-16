@@ -97,16 +97,16 @@ class ProductRegistration:
                     self.sitepassword = row[1]
                     self.is_private_ltd = row[2]
                     self.district = row[3]
-                    self.authorization = row[4]
-                    self.manufacturing = row[5]
-                    self.production = row[6]
-                    self.pancard = row[7]
-                    self.ssi = row[8]
-                    self.self_affidavit_path = row[9]
-                    self.consent_path = row[10]
-                    self.final_doc_path = row[11]
-                    self.signature_path = row[12]
-                    self.incorporation_certificate = row[13]
+                    self.authorization = 'Documents/auth.pdf'
+                    self.manufacturing = 'Documents/mfg.pdf'
+                    self.production = 'Documents/production.pdf'
+                    self.pancard = 'Documents/pancard.pdf'
+                    self.ssi = 'Documents/ssi.pdf'
+                    self.self_affidavit_path = 'Documents'
+                    self.consent_path = 'Documents'
+                    self.final_doc_path = 'final-docs'
+                    self.signature_path = 'Documents/digitalsign.jpg'
+                    self.incorporation_certificate = 'Documents/cin.pdf'
                     return
                 line_count += 1
 
@@ -178,7 +178,7 @@ class ProductRegistration:
         elements = self.driver.find_elements_by_id('ctl00_default_ddlProductGroup')
         if elements:
             select = Select(elements[0])
-            select.select_by_visible_text(data[2])
+            select.select_by_value(data[2])
         time.sleep(1)
 
         if data[3]!='':
@@ -259,7 +259,7 @@ class ProductRegistration:
             if file:
                 if not os.path.exists(self.incorporation_certificate):
                     messagebox.showinfo("Error", "Incorporation Certificate Document Not Found")
-                file[0].send_keys(self.pancard)
+                file[0].send_keys(self.incorporation_certificate)
                 btn = self.driver.find_elements_by_id('ctl00_default_gvForm1Checklist_ctl04_rowbtnUpLoad')
                 btn[0].click()
                 time.sleep(2)
