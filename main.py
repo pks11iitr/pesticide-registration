@@ -164,7 +164,7 @@ class ProductRegistration:
 
     def fill_product_data(self, data):
         #clear last downloaded file
-        self.downloded_file="C:\\Users\dev\Downloads\ReportForm1.pdfReportForm1.pdf"
+        self.downloded_file="C:\\Users\dev\Downloads\ReportForm1.pdf"
         if os.path.exists(self.downloded_file):
             os.remove(self.downloded_file)
 
@@ -332,7 +332,9 @@ class ProductRegistration:
             file_name = data[0]
             file_name = file_name.replace('.', '-').replace('/', '-') + '.pdf'
             if not os.path.exists(self.self_affidavit_path + '/' +file_name):
+                print('Self Affidavit IS not Found')
                 messagebox.showinfo("Error", "Self Affidavit Document Not Found: "+self.self_affidavit_path + '/' +file_name)
+                
             file[0].send_keys(self.self_affidavit_path + '/' + file_name)
             btn = self.driver.find_elements_by_id('ctl00_default_gvForm1Checklist_ctl'+seq+'_rowbtnUpLoad')
             btn[0].click()
@@ -346,6 +348,7 @@ class ProductRegistration:
             file_name = data[2]
             file_name = file_name.replace('.', '-').replace('/', '-') + '.pdf'
             if not os.path.exists(self.consent_path + '/' +file_name):
+                print('Consent IS not Found')
                 messagebox.showinfo("Error", "Consent Document Not Found: "+self.consent_path + '/' +file_name)
             file[0].send_keys(self.consent_path + '/' + file_name)
             btn = self.driver.find_elements_by_id('ctl00_default_gvForm1Checklist_ctl'+seq+'_rowbtnUpLoad')
@@ -362,6 +365,7 @@ class ProductRegistration:
                 print('options found')
                 file_name=data[3].replace('.', '-').replace('/','-') + '.pdf'
                 if not os.path.exists(self.consent_path + '/' +file_name):
+                    print('Consent IS not Found')
                     messagebox.showinfo("Error", "Consent Document Not Found: "+self.consent_path + '/' +file_name)
                 print(file_name)
                 docoptions=Select(docoptions[0])
@@ -477,9 +481,11 @@ class ProductRegistration:
             btn[0].click()
 
     def startPDFProcessing(self, file, product_name):
+        fp=open(file, 'rb')
         self.pdf_pages_list = []
-        pdf = PdfFileReader(open(file, 'rb'))
+        pdf = PdfFileReader(fp)
         pages = pdf.getNumPages()
+        fp.close()
         self.parsepdf(file, 0, pages - 1)
         print(self.pdf_pages_list)
         return self.add_signature_image(file, product_name)
@@ -487,10 +493,10 @@ class ProductRegistration:
     def parsepdf(self, filename, startpage, endpage):
 
         # Open a PDF file.
-        fp = open(filename, 'rb')
+        self.fp_downloaded = open(filename, 'rb')
 
         # Create a PDF parser object associated with the file object.
-        parser = PDFParser(fp)
+        parser = PDFParser(self.fp_downloaded)
 
         # Create a PDF document object that stores the document structure.
         # Password for initialization as 2nd parameter
@@ -527,6 +533,8 @@ class ProductRegistration:
                 # extract text from this object
                 self.parse_obj(layout._objs, i)
             i += 1
+
+        self.fp_downloaded.close()
 
     def parse_obj(self, lt_objs, page):
         # loop over the object list
@@ -565,7 +573,8 @@ class ProductRegistration:
         c.showPage()
         c.save()
         # Get the watermark file you just created
-        watermark = PdfFileReader(open("test.pdf", "rb"))
+        self.test_file=open("test.pdf", "rb")
+        watermark = PdfFileReader(self.test_file)
 
         return watermark
 
@@ -596,7 +605,8 @@ class ProductRegistration:
         # pdf.write(open("", "wb"))
         # Get our files ready
         output_file = PdfFileWriter()
-        input_file = PdfFileReader(open(file, "rb"))
+        self.fp_downloaded=open(file, "rb")
+        input_file = PdfFileReader(self.fp_downloaded)
 
         # Number of pages in input document
         page_count = input_file.getNumPages()
@@ -625,13 +635,13 @@ class ProductRegistration:
         with open(self.final_doc_path + '/' + product_name + '.pdf', "wb") as outputStream:
             output_file.write(outputStream)
 
+        self.fp_downloaded.close()
         return self.final_doc_path + '/' + product_name + '.pdf'
 
     def delete_temporary_files(self):
+        self.test_file.close()
         if os.path.exists('test.pdf'):
             os.remove('test.pdf')
-        if os.path.exists('output.pdf'):
-            os.remove('output.pdf')
 
     def start(self):
         self.root = tkinter.Tk()
