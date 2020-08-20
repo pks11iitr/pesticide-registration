@@ -97,6 +97,7 @@ class ProductRegistration:
                     self.sitepassword = row[1]
                     self.is_private_ltd = row[2]
                     self.district = row[3]
+                    self.address_info = row[4]
                     self.authorization = os.getcwd()+'/Documents/auth.pdf'
                     self.manufacturing = os.getcwd()+'/Documents/mfg.pdf'
                     self.production = os.getcwd()+'/Documents/production.pdf'
@@ -153,21 +154,20 @@ class ProductRegistration:
                 return product
 
     def start_filling_data(self):
+        self.downloded_file="C:\\Users\dev\Downloads\ReportForm1.pdf"
         with open('products-sheet.csv', encoding="utf8") as csv_file:
             csv_reader = csv.reader(csv_file, delimiter=',')
             line_count = 0
             for row in csv_reader:
                 if line_count > 0:
+                    self.delete_temporary_files()
+                    self.test_file=None
+                    self.fp_downloaded = None
                     self.open_registration_form(row)
                     self.fill_product_data(row)
                 line_count = line_count + 1
 
     def fill_product_data(self, data):
-        #clear last downloaded file
-        self.downloded_file="C:\\Users\dev\Downloads\ReportForm1.pdf"
-        if os.path.exists(self.downloded_file):
-            os.remove(self.downloded_file)
-
         self.fill_product_data_form_1(data)
         self.fill_product_data_form_2(data)
         self.fill_product_data_form_3()
@@ -200,11 +200,33 @@ class ProductRegistration:
             select.select_by_value('56')
         time.sleep(1)
 
+
         elements = self.driver.find_elements_by_id('ctl00_default_ddlCommonName')
         if elements:
             select = Select(elements[0])
             select.select_by_visible_text(data[0])
         time.sleep(1)
+
+        elements = self.driver.find_elements_by_id('ctl00_default_gvPremisesAddr_ctl02_chkPremisesAddress')
+        if elements:
+            elements[0].click()
+        time.sleep(1)
+        if self.address_info == '1' or self.address_info == '1,2' or self.address_info == '1,3':
+            elements = self.driver.find_elements_by_id('ctl00_default_gvPremisesAddr_ctl02_chkPremisesAddress')
+            if elements:
+                elements[0].click()
+            time.sleep(1)
+        if self.address_info == '2' or self.address_info == '1,2' or self.address_info == '2,3':
+            elements = self.driver.find_elements_by_id('ctl00_default_gvPremisesAddr_ctl03_chkPremisesAddress')
+            if elements:
+                elements[0].click()
+            time.sleep(1)
+        if self.address_info == '3' or self.address_info == '1,3' or self.address_info == '2,3':
+            elements = self.driver.find_elements_by_id('ctl00_default_gvPremisesAddr_ctl04_chkPremisesAddress')
+            if elements:
+                elements[0].click()
+            time.sleep(1)
+
 
         elements = self.driver.find_elements_by_id('ctl00_default_ddl_repacked')
         if elements:
@@ -447,6 +469,7 @@ class ProductRegistration:
             export[0].click()
             time.sleep(3)
 
+        self.driver.close()
         self.driver.switch_to.window(self.window_parent)
 
         page2 = self.driver.find_elements_by_id('ctl00_default_hypBacktoPage2')
@@ -462,7 +485,7 @@ class ProductRegistration:
             delbtn[0].click()
         time.sleep(5)
 
-        ale = self.driver.switch_to.alert;
+        ale = self.driver.switch_to.alert
         ale.accept()
         time.sleep(1)
 
@@ -569,11 +592,12 @@ class ProductRegistration:
         # c.drawImage("sign.png", x - 60, y - 60, 100, 40)
         # x = 422
         # y = 211
-        c.drawImage(self.signature_path, x - 60, y - 60, 100, 40)
+        c.drawImage(self.signature_path, x - 65, y - 60, 120, 50)
         c.showPage()
         c.save()
         # Get the watermark file you just created
-        self.test_file=open("test.pdf", "rb")
+        if self.test_file==None:
+            self.test_file=open("test.pdf", "rb")
         watermark = PdfFileReader(self.test_file)
 
         return watermark
@@ -622,7 +646,7 @@ class ProductRegistration:
                     # merge the watermark with the page
                     watermark = self.create_watermark(details['x'], details['y'])
                     input_page.mergePage(watermark.getPage(0))
-                    self.delete_temporary_files()
+                    #self.delete_temporary_files()
                     # add page from input file to output document
             output_file.addPage(input_page)
 
@@ -634,14 +658,21 @@ class ProductRegistration:
 
         with open(self.final_doc_path + '/' + product_name + '.pdf', "wb") as outputStream:
             output_file.write(outputStream)
+        outputStream.close()    
 
         self.fp_downloaded.close()
+        self.test_file.close()
+        #self.test_file=None
         return self.final_doc_path + '/' + product_name + '.pdf'
 
     def delete_temporary_files(self):
-        self.test_file.close()
-        if os.path.exists('test.pdf'):
-            os.remove('test.pdf')
+            #self.test_file.close()
+            if os.path.exists('test.pdf'):
+                os.remove('test.pdf')
+            #clear last downloaded file
+            if os.path.exists(self.downloded_file):
+                os.remove(self.downloded_file)
+
 
     def start(self):
         self.root = tkinter.Tk()
